@@ -3,14 +3,14 @@ hyperskill_project:
   ide_files: https://stepik.org/media/attachments/lesson/461165/additional_files.json
   is_template_based: false
   use_ide: true
-update_date: Thu, 01 Jan 1970 00:00:00 UTC
+update_date: Wed, 11 Aug 2021 18:41:51 UTC
 stages:
 - id: 795
   step: 12008
   is_completed: true
 - id: 796
   step: 12009
-  is_completed: false
+  is_completed: true
 - id: 797
   step: 12010
   is_completed: false
@@ -29,6 +29,8 @@ topics:
     theory_id: 9704
   - title: Files
     theory_id: 13025
+  - title: File types
+    theory_id: 13017
   - title: Introduction to pandas
     theory_id: 10416
   - title: Series
@@ -69,6 +71,18 @@ topics:
     theory_id: 6057
   - title: Packages
     theory_id: 6384
+  - title: Command line overview
+    theory_id: 8977
+  - title: Parameters and options
+    theory_id: 9746
+  - title: Pip
+    theory_id: 6230
+  - title: Introduction to Linux
+    theory_id: 9526
+  - title: File modes and permissions
+    theory_id: 13953
+  - title: Working with file modes and permissions
+    theory_id: 13961
   - title: Files in Python
     theory_id: 8691
   - title: Reading files
@@ -77,12 +91,6 @@ topics:
     theory_id: 8334
   - title: Context manager
     theory_id: 8702
-  - title: Command line overview
-    theory_id: 8977
-  - title: Parameters and options
-    theory_id: 9746
-  - title: Pip
-    theory_id: 6230
   - title: Basic data types
     theory_id: 5852
   - title: Integer arithmetic
@@ -108,12 +116,12 @@ topics:
   - title: Split and join
     theory_id: 6972
   1:
-  - title: Arguments
-    theory_id: 7248
   - title: CSV
     theory_id: 13164
   - title: Regexps basics
     theory_id: 7580
+  - title: Arguments
+    theory_id: 7248
   - title: Regexps in Python
     theory_id: 9468
   - title: Working with CSV
@@ -135,10 +143,10 @@ topics:
     theory_id: 7400
   - title: Expressions
     theory_id: 7409
-  - title: The NULL value
-    theory_id: 7907
   - title: Basic SELECT statement
     theory_id: 7392
+  - title: The NULL value
+    theory_id: 7907
   - title: SELECT FROM statement
     theory_id: 8611
   - title: SELECT FROM WHERE statement
@@ -157,6 +165,8 @@ topics:
   - title: Json module
     theory_id: 8999
   4:
+  - title: XML
+    theory_id: 6901
   - title: Computer programming
     theory_id: 8739
   - title: Introduction to OOP
@@ -167,8 +177,6 @@ topics:
     theory_id: 6661
   - title: Class instances
     theory_id: 6669
-  - title: XML
-    theory_id: 6901
   - title: Methods
     theory_id: 6931
   - title: XML in Python
@@ -182,11 +190,11 @@ topics:
   5:
   - title: Computer algorithms
     theory_id: 4953
-  - title: Algorithms in Python
-    theory_id: 7316
   - title: Intro to computational thinking
     theory_id: 8742
   - title: Components of computational thinking
     theory_id: 8745
   - title: Functional decomposition
     theory_id: 9571
+  - title: Algorithms in Python
+    theory_id: 7316

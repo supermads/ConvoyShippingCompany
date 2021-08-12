@@ -143,6 +143,12 @@ files:
     if __name__ == '__main__':
         EasyRiderStage1('convoy.convoy').run_tests()
   learner_created: false
+- name: data_one..csv
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/projects/151/stages/796/implement#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Thu, 12 Aug 2021 21:50:40 UTC
 record: -1
