@@ -1,6 +1,8 @@
 import pandas as pd
 import csv
 import sqlite3
+import json
+import collections
 
 
 def convert_to_csv(file_name):
@@ -110,17 +112,56 @@ def create_database(file_name, column_names):
     else:
         print(f"{entries_added} records were inserted into {db_name}")
 
+    return db_name
+
+
+def convert_to_json(file_name):
+    json_file = file_name.replace(".s3db", ".json")
+    conn = sqlite3.connect(file_name)
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM convoy")
+    rows = cursor.fetchall()
+
+    dict_list = []
+    for row in rows:
+        d = collections.OrderedDict()
+        d["vehicle_id"] = row[0]
+        d["engine_capacity"] = row[1]
+        d["fuel_consumption"] = row[2]
+        d["maximum_load"] = row[3]
+        dict_list.append(d)
+
+    vehicles = len(dict_list)
+    if vehicles == 1:
+        print(f"1 vehicle was saved into {json_file}")
+    else:
+        print(f"{vehicles} vehicles were saved into {json_file}")
+
+    table_dict = {"convoy": dict_list}
+    j = json.dumps(table_dict)
+
+    with open(json_file, "w") as f:
+        f.write(j)
+
+    conn.close()
+
+    return json_file
+
 
 def main():
     file_name = input("Input file name\n")
 
-    if file_name[-13:] != "[CHECKED].csv":
-        file_name, column_names = correct_and_write_csv(file_name)
-        create_database(file_name, column_names)
-    else:
+    if file_name[-13:] == "[CHECKED].csv":
         with open(file_name, "r") as f:
             column_names = f.readlines()[0].replace("\n", "").split(",")
-        create_database(file_name, column_names)
+        file_name = create_database(file_name, column_names)
+
+    elif file_name[-4:] != 's3db':
+        file_name, column_names = correct_and_write_csv(file_name)
+        file_name = create_database(file_name, column_names)
+
+    convert_to_json(file_name)
 
 
 main()

@@ -295,6 +295,18 @@ files:
     if __name__ == '__main__':
         EasyRiderStage1('convoy.convoy').run_tests()
   learner_created: false
+- name: data_one..csv
+  visible: true
+  learner_created: true
+- name: test/data_one_sql.s3db
+  visible: true
+  learner_created: true
+- name: test/data_big_sql.s3db
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/projects/151/stages/798/implement#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Mon, 16 Aug 2021 17:10:20 UTC
 record: -1
