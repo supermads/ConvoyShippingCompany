@@ -2,7 +2,8 @@ import pandas as pd
 import csv
 import sqlite3
 import json
-import collections
+from collections import OrderedDict
+from dicttoxml import dicttoxml
 
 
 def convert_to_csv(file_name):
@@ -125,7 +126,7 @@ def convert_to_json(file_name):
 
     dict_list = []
     for row in rows:
-        d = collections.OrderedDict()
+        d = OrderedDict()
         d["vehicle_id"] = row[0]
         d["engine_capacity"] = row[1]
         d["fuel_consumption"] = row[2]
@@ -146,7 +147,23 @@ def convert_to_json(file_name):
 
     conn.close()
 
-    return json_file
+    return json_file, vehicles
+
+
+def convert_to_xml(file_name, vehicles):
+    xml_file = file_name.replace(".json", ".xml")
+
+    with open(file_name, "r") as json_file:
+        json_dict = json.load(json_file)
+        xml = dicttoxml(json_dict, attr_type=False, root=False, item_func=lambda x: "vehicle")
+
+    with open(xml_file, "w") as f:
+        f.write(xml.decode("utf-8"))
+
+    if vehicles == 1:
+        print(f"1 vehicle was saved into {xml_file}")
+    else:
+        print(f"{vehicles} vehicles were saved into {xml_file}")
 
 
 def main():
@@ -161,7 +178,8 @@ def main():
         file_name, column_names = correct_and_write_csv(file_name)
         file_name = create_database(file_name, column_names)
 
-    convert_to_json(file_name)
+    file_name, vehicles = convert_to_json(file_name)
+    convert_to_xml(file_name, vehicles)
 
 
 main()
