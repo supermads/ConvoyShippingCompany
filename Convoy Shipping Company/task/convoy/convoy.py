@@ -72,6 +72,27 @@ def correct_and_write_csv(file_name):
     return checked_file_name, column_names
 
 
+def calc_score(row):
+        score = 0
+
+    # Fuel needed = liters of fuel_consumption per hundred km multiplied by 450 km trip length
+        fuel_needed = 450 * row[3] / 100
+        if fuel_needed <= row[2]:
+            score += 2
+        elif fuel_needed <= row[2] * 2:
+            score += 1
+
+        if fuel_needed <= 230:
+            score += 2
+        else:
+            score += 1
+
+        if row[4] >= 20:
+            score += 2
+
+        return score
+
+
 def create_database(file_name, column_names):
     db_name = file_name[:-13] + ".s3db"
 
@@ -81,6 +102,8 @@ def create_database(file_name, column_names):
     cursor = conn.cursor()
 
     create_command = """CREATE TABLE IF NOT EXISTS convoy ("""
+
+    column_names.append("score")
 
     for name in column_names:
         if name == "vehicle_id":
@@ -93,16 +116,20 @@ def create_database(file_name, column_names):
     cursor.execute(create_command)
 
     entries_added = 0
+
     for row in df.itertuples():
+        score = calc_score(row)
         cursor.execute("""
             INSERT INTO convoy 
-            VALUES (?,?,?,?)
+            VALUES (?,?,?,?,?)
             """,
             (row[1],
             row[2],
             row[3],
-            row[4])
+            row[4],
+            score)
             )
+
         entries_added += 1
 
     conn.commit()
@@ -124,22 +151,26 @@ def convert_to_json(file_name):
     cursor.execute("SELECT * FROM convoy")
     rows = cursor.fetchall()
 
-    dict_list = []
+    json_vehicle_list = []
+    xml_vehicle_list = []
     for row in rows:
         d = OrderedDict()
         d["vehicle_id"] = row[0]
         d["engine_capacity"] = row[1]
         d["fuel_consumption"] = row[2]
         d["maximum_load"] = row[3]
-        dict_list.append(d)
+        if row[4] > 3:
+            json_vehicle_list.append(d)
+        else:
+            xml_vehicle_list.append(d)
 
-    vehicles = len(dict_list)
-    if vehicles == 1:
+    json_vehicles = len(json_vehicle_list)
+    if json_vehicles == 1:
         print(f"1 vehicle was saved into {json_file}")
     else:
-        print(f"{vehicles} vehicles were saved into {json_file}")
+        print(f"{json_vehicles} vehicles were saved into {json_file}")
 
-    table_dict = {"convoy": dict_list}
+    table_dict = {"convoy": json_vehicle_list}
     j = json.dumps(table_dict)
 
     with open(json_file, "w") as f:
@@ -147,15 +178,14 @@ def convert_to_json(file_name):
 
     conn.close()
 
-    return json_file, vehicles
+    return json_file, xml_vehicle_list
 
 
-def convert_to_xml(file_name, vehicles):
+def convert_to_xml(file_name, vehicle_list):
     xml_file = file_name.replace(".json", ".xml")
+    vehicles = len(vehicle_list)
 
-    with open(file_name, "r") as json_file:
-        json_dict = json.load(json_file)
-        xml = dicttoxml(json_dict, attr_type=False, root=False, item_func=lambda x: "vehicle")
+    xml = dicttoxml({"convoy": vehicle_list}, attr_type=False, root=False, item_func=lambda x: "vehicle")
 
     with open(xml_file, "w") as f:
         f.write(xml.decode("utf-8"))
@@ -178,8 +208,8 @@ def main():
         file_name, column_names = correct_and_write_csv(file_name)
         file_name = create_database(file_name, column_names)
 
-    file_name, vehicles = convert_to_json(file_name)
-    convert_to_xml(file_name, vehicles)
+    file_name, xml_vehicles = convert_to_json(file_name)
+    convert_to_xml(file_name, xml_vehicles)
 
 
 main()
